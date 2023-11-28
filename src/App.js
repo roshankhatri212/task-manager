@@ -21,6 +21,10 @@ function App() {
     }
   };
 
+  const generateUniqueId = () => {
+    return Math.random().toString(36).substr(2, 9);
+  };
+
   const handleTaskChange = (taskId) => {
     const updatedTasks = tasks.map((task) =>
       task.id === taskId ? { ...task, completed: !task.completed } : task
@@ -46,11 +50,14 @@ function App() {
     }
 
     try {
-      await axios.post(API_URL, newTask);
+      const uniqueId = generateUniqueId();
+      const taskToAdd = { ...newTask, id: uniqueId };
+
+      await axios.post(API_URL, taskToAdd);
       console.log('Task added successfully');
 
       // Append the new task to the current tasks state
-      setTasks((prevTasks) => [...prevTasks, newTask]);
+      setTasks((prevTasks) => [...prevTasks, taskToAdd]);
 
       // Reset the new task input
       setNewTask({ title: '', completed: false });
