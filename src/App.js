@@ -4,9 +4,6 @@ import { AppWrapper, TaskList, AddTaskForm, TaskItem, DeleteButton } from './sty
 
 const API_URL = 'https://jsonplaceholder.typicode.com/todos';
 
-
-
-
 function App() {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState({ title: '', completed: false });
@@ -17,16 +14,12 @@ function App() {
 
   const fetchTasks = async () => {
     try {
-      // Fetch the first 5 tasks
       const response = await axios.get(`${API_URL}?_limit=5`);
-      
-      // Update the state with the fetched tasks
-      setTasks((prevTasks) => [...prevTasks, response.data]);
+      setTasks(response.data);
     } catch (error) {
       console.error('Error fetching tasks:', error);
     }
   };
-  
 
   const handleTaskChange = (taskId) => {
     const updatedTasks = tasks.map((task) =>
@@ -35,17 +28,16 @@ function App() {
     setTasks(updatedTasks);
   };
 
-  const handleDeleteTask = (taskId) => {
-    // Remove the task from the state without making an API call
-    const updatedTasks = tasks.filter((task) => task.id !== taskId);
-    setTasks(updatedTasks);
-  
-    // Make the API call to delete the task
-    axios.delete(`${API_URL}/${taskId}`)
-      .then(() => console.log('Task deleted successfully'))
-      .catch((error) => console.error('Error deleting task:', error));
+  const handleDeleteTask = async (taskId) => {
+    try {
+      await axios.delete(`${API_URL}/${taskId}`);
+      const updatedTasks = tasks.filter((task) => task.id !== taskId);
+      setTasks(updatedTasks);
+      console.log('Task deleted successfully');
+    } catch (error) {
+      console.error('Error deleting task:', error);
+    }
   };
-  
 
   const handleAddTask = async () => {
     if (newTask.title.trim() === '') {
@@ -54,19 +46,9 @@ function App() {
     }
 
     try {
-      // Log the task being added
-      console.log('Adding Task:', newTask);
-
-      // Post the new task
       await axios.post(API_URL, newTask);
-
-      // Log a message after adding the task
       console.log('Task added successfully');
-
-      // Reset the new task input
       setNewTask({ title: '', completed: false });
-
-      // Fetch and update the task list
       fetchTasks();
     } catch (error) {
       console.error('Error adding task:', error);
