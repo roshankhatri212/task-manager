@@ -60,6 +60,7 @@ export const AddTaskForm = styled.div`
     background-color: #28a745;
     color: #fff;
     padding: 8px 16px;
+    margin-right: 8px;
     border: none;
     cursor: pointer;
   }
@@ -67,6 +68,15 @@ export const AddTaskForm = styled.div`
 
 export const DeleteButton = styled.button`
   background-color: #dc3545;
+  color: #fff;
+  padding: 4px 8px;
+  border: none;
+  margin-left: 10px;
+  cursor: pointer;
+`;
+
+export const EditButton = styled.button`
+  background-color: #007bff;
   color: #fff;
   padding: 4px 8px;
   border: none;

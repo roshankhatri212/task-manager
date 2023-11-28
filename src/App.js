@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { AppWrapper, TaskList, AddTaskForm, TaskItem, DeleteButton } from './styles';
+import { AppWrapper, TaskList, AddTaskForm, TaskItem, DeleteButton, EditButton } from './styles';
 
 const API_URL = 'https://jsonplaceholder.typicode.com/todos';
 
 function App() {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState({ title: '', completed: false });
+  const [editingTask, setEditingTask] = useState(null);
 
   useEffect(() => {
     fetchTasks();
@@ -43,6 +44,29 @@ function App() {
     }
   };
 
+  const handleEditTask = (taskId) => {
+    const taskToEdit = tasks.find((task) => task.id === taskId);
+    setEditingTask(taskToEdit);
+  };
+
+  const handleUpdateTask = async () => {
+    try {
+      await axios.put(`${API_URL}/${editingTask.id}`, editingTask);
+      const updatedTasks = tasks.map((task) =>
+        task.id === editingTask.id ? editingTask : task
+      );
+      setTasks(updatedTasks);
+      setEditingTask(null);
+      console.log('Task updated successfully');
+    } catch (error) {
+      console.error('Error updating task:', error);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingTask(null);
+  };
+
   const handleAddTask = async () => {
     if (newTask.title.trim() === '') {
       alert('Task title cannot be empty!');
@@ -71,26 +95,45 @@ function App() {
       <h1>Task Manager</h1>
 
       <AddTaskForm>
-        <h2>Add Task</h2>
+        <h2>{editingTask ? 'Edit Task' : 'Add Task'}</h2>
         <label>
           Title:
           <input
             type="text"
-            value={newTask.title}
-            onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+            value={editingTask ? editingTask.title : newTask.title}
+            onChange={(e) => {
+              if (editingTask) {
+                setEditingTask((prevTask) => ({ ...prevTask, title: e.target.value }));
+              } else {
+                setNewTask({ ...newTask, title: e.target.value });
+              }
+            }}
           />
         </label>
         <label>
           Status:
           <select
-            value={newTask.completed}
-            onChange={(e) => setNewTask({ ...newTask, completed: e.target.value === 'true' })}
+            value={editingTask ? editingTask.completed : newTask.completed}
+            onChange={(e) => {
+              if (editingTask) {
+                setEditingTask((prevTask) => ({ ...prevTask, completed: e.target.value === 'true' }));
+              } else {
+                setNewTask({ ...newTask, completed: e.target.value === 'true' });
+              }
+            }}
           >
             <option value={false}>Pending</option>
             <option value={true}>Completed</option>
           </select>
         </label>
-        <button onClick={handleAddTask}>Add Task</button>
+        {editingTask ? (
+          <>
+            <button onClick={handleUpdateTask}>Update Task</button>
+            <button onClick={handleCancelEdit}>Cancel</button>
+          </>
+        ) : (
+          <button onClick={handleAddTask}>Add Task</button>
+        )}
       </AddTaskForm>
 
       <TaskList>
@@ -105,6 +148,7 @@ function App() {
               />
               <span>{task.title}</span>
               <DeleteButton onClick={() => handleDeleteTask(task.id)}>Delete</DeleteButton>
+              <EditButton onClick={() => handleEditTask(task.id)}>Edit</EditButton>
             </TaskItem>
           ))}
         </ul>
