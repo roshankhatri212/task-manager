@@ -48,8 +48,12 @@ function App() {
     try {
       await axios.post(API_URL, newTask);
       console.log('Task added successfully');
+
+      // Append the new task to the current tasks state
+      setTasks((prevTasks) => [...prevTasks, newTask]);
+
+      // Reset the new task input
       setNewTask({ title: '', completed: false });
-      fetchTasks();
     } catch (error) {
       console.error('Error adding task:', error);
     }
