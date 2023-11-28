@@ -1,10 +1,12 @@
 import styled from 'styled-components';
 
+// Styled component for the main application wrapper
 export const AppWrapper = styled.div`
   text-align: center;
   padding: 20px;
 `;
 
+// Styled component for the task list section
 export const TaskList = styled.div`
   margin-top: 20px;
 
@@ -18,6 +20,7 @@ export const TaskList = styled.div`
   }
 `;
 
+// Styled component for individual task items
 export const TaskItem = styled.li`
   display: flex;
   align-items: center;
@@ -37,6 +40,7 @@ export const TaskItem = styled.li`
   }
 `;
 
+// Styled component for the form used to add tasks
 export const AddTaskForm = styled.div`
   margin-top: 20px;
 
@@ -56,6 +60,7 @@ export const AddTaskForm = styled.div`
     margin-top: 4px;
   }
 
+  // Styled component for the add task button
   button {
     background-color: #28a745;
     color: #fff;
@@ -66,6 +71,7 @@ export const AddTaskForm = styled.div`
   }
 `;
 
+// Styled component for the delete task button
 export const DeleteButton = styled.button`
   background-color: #dc3545;
   color: #fff;
@@ -75,6 +81,7 @@ export const DeleteButton = styled.button`
   cursor: pointer;
 `;
 
+// Styled component for the edit task button
 export const EditButton = styled.button`
   background-color: #007bff;
   color: #fff;
